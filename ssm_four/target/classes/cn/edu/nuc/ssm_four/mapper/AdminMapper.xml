@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.nuc.ssm_four.dao.interfaces.AdminMapper" >
+  <resultMap id="BaseResultMap" type="cn.edu.nuc.ssm_four.entity.Admin" >
+    <id column="AID" property="aid" jdbcType="INTEGER" />
+    <result column="ANAME" property="aname" jdbcType="VARCHAR" />
+    <result column="APASS" property="apass" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    AID, ANAME, APASS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from admin
+    where AID = #{aid,jdbcType=INTEGER}
+  </select>
+    <!-- 按名字查询 -->
+    <select id="selectByName" resultMap="BaseResultMap" parameterType="String" >
+    select 
+    <include refid="Base_Column_List" />
+    from admin
+    where ANAME = #{aname,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from admin
+    where AID = #{aid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.nuc.ssm_four.entity.Admin" >
+    insert into admin (AID, ANAME, APASS
+      )
+    values (#{aid,jdbcType=INTEGER}, #{aname,jdbcType=VARCHAR}, #{apass,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.nuc.ssm_four.entity.Admin" >
+    insert into admin
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="aid != null" >
+        AID,
+      </if>
+      <if test="aname != null" >
+        ANAME,
+      </if>
+      <if test="apass != null" >
+        APASS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="aid != null" >
+        #{aid,jdbcType=INTEGER},
+      </if>
+      <if test="aname != null" >
+        #{aname,jdbcType=VARCHAR},
+      </if>
+      <if test="apass != null" >
+        #{apass,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.nuc.ssm_four.entity.Admin" >
+    update admin
+    <set >
+      <if test="aname != null" >
+        ANAME = #{aname,jdbcType=VARCHAR},
+      </if>
+      <if test="apass != null" >
+        APASS = #{apass,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where AID = #{aid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.nuc.ssm_four.entity.Admin" >
+    update admin
+    set ANAME = #{aname,jdbcType=VARCHAR},
+      APASS = #{apass,jdbcType=VARCHAR}
+    where AID = #{aid,jdbcType=INTEGER}
+  </update>
+</mapper>

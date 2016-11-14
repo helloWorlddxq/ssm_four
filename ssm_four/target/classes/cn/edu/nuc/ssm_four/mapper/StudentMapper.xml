@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.nuc.ssm_four.dao.interfaces.StudentMapper" >
+  <resultMap id="BaseResultMap" type="cn.edu.nuc.ssm_four.entity.Student" >
+    <id column="SID" property="sid" jdbcType="INTEGER" />
+    <result column="AID" property="aid" jdbcType="INTEGER" />
+    <result column="SNAME" property="sname" jdbcType="VARCHAR" />
+    <result column="SSEX" property="ssex" jdbcType="INTEGER" />
+    <result column="SPRO" property="spro" jdbcType="VARCHAR" />
+    <result column="SCLASS" property="sclass" jdbcType="VARCHAR" />
+    <result column="SPASS" property="spass" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    SID, AID, SNAME, SSEX, SPRO, SCLASS, SPASS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from student
+    where SID = #{sid,jdbcType=INTEGER}
+  </select>
+  <select id="selectStudent"  resultType="Student">
+    select 
+    <include refid="Base_Column_List" />
+    from student
+  </select>
+   <select id="findList"  resultType="Student">
+    select 
+    <include refid="Base_Column_List" />
+    from student
+  </select>
+  <select id="findAllPage" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from student
+    LIMIT #{start},#{offset}
+  </select>
+    <select id="selectId" resultType="Student" parameterType="int" >
+    select 
+    s.sid,s.sname,s.ssex,s.spro,s.sclass,s.spass,a.aid 'admin.aid'
+    
+    from student s left join admin a on s.aid=a.aid
+    where exists (
+    select 'x' from test t where s.sid = t.sid and s.sid= #{sid}
+    )  limit #{start},#{offset}
+  </select>
+  <!-- 学生名称模糊查询 -->
+  <select id="selectSname" resultType="Student" parameterType="String" >
+    select 
+    <include refid="Base_Column_List" />
+    from student
+<!--     where SNAME = #{sname,jdbcType=VARCHAR} -->
+    where SNAME LIKE CONCAT(CONCAT('%', #{sname,jdbcType=VARCHAR}), '%')
+  </select>
+  <!-- 学生名称模糊查询 -->
+  <select id="selectBySname" resultType="Student" parameterType="String" >
+    select 
+    <include refid="Base_Column_List" />
+    from student
+    where SNAME LIKE CONCAT(CONCAT('%', #{sname,jdbcType=VARCHAR}), '%')
+  </select>
+   <select id="count" resultType="int" parameterType="int" >
+    select 
+    count(s.sid) from student s
+    where exists (select 'x' from admin a where s.aid = a.aid and s.aid = #{value})
+  </select>
+  <select id="find" resultType="Student" parameterType="int" >
+    select 
+    count(s.sid) from student s
+    where exists (select 'x' from admin a where s.aid = a.aid and s.aid = #{value})
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from student
+    where SID = #{sid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.nuc.ssm_four.entity.Student" >
+    insert into student (SID, AID, SNAME, 
+      SSEX, SPRO, SCLASS, 
+      SPASS)
+    values (#{sid,jdbcType=INTEGER}, #{aid,jdbcType=INTEGER}, #{sname,jdbcType=VARCHAR}, 
+      #{ssex,jdbcType=INTEGER}, #{spro,jdbcType=VARCHAR}, #{sclass,jdbcType=VARCHAR}, 
+      #{spass,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.nuc.ssm_four.entity.Student" >
+    insert into student
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sid != null" >
+        SID,
+      </if>
+      <if test="aid != null" >
+        AID,
+      </if>
+      <if test="sname != null" >
+        SNAME,
+      </if>
+      <if test="ssex != null" >
+        SSEX,
+      </if>
+      <if test="spro != null" >
+        SPRO,
+      </if>
+      <if test="sclass != null" >
+        SCLASS,
+      </if>
+      <if test="spass != null" >
+        SPASS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sid != null" >
+        #{sid,jdbcType=INTEGER},
+      </if>
+      <if test="aid != null" >
+        #{aid,jdbcType=INTEGER},
+      </if>
+      <if test="sname != null" >
+        #{sname,jdbcType=VARCHAR},
+      </if>
+      <if test="ssex != null" >
+        #{ssex,jdbcType=INTEGER},
+      </if>
+      <if test="spro != null" >
+        #{spro,jdbcType=VARCHAR},
+      </if>
+      <if test="sclass != null" >
+        #{sclass,jdbcType=VARCHAR},
+      </if>
+      <if test="spass != null" >
+        #{spass,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.nuc.ssm_four.entity.Student" >
+    update student
+    <set >
+      <if test="aid != null" >
+        AID = #{aid,jdbcType=INTEGER},
+      </if>
+      <if test="sname != null" >
+        SNAME = #{sname,jdbcType=VARCHAR},
+      </if>
+      <if test="ssex != null" >
+        SSEX = #{ssex,jdbcType=INTEGER},
+      </if>
+      <if test="spro != null" >
+        SPRO = #{spro,jdbcType=VARCHAR},
+      </if>
+      <if test="sclass != null" >
+        SCLASS = #{sclass,jdbcType=VARCHAR},
+      </if>
+      <if test="spass != null" >
+        SPASS = #{spass,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where SID = #{sid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.nuc.ssm_four.entity.Student" >
+    update student
+    set AID = #{aid,jdbcType=INTEGER},
+      SNAME = #{sname,jdbcType=VARCHAR},
+      SSEX = #{ssex,jdbcType=INTEGER},
+      SPRO = #{spro,jdbcType=VARCHAR},
+      SCLASS = #{sclass,jdbcType=VARCHAR},
+      SPASS = #{spass,jdbcType=VARCHAR}
+    where SID = #{sid,jdbcType=INTEGER}
+  </update>
+</mapper>

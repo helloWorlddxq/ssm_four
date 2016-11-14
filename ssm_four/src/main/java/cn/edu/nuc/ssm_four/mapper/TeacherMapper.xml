@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.nuc.ssm_four.dao.interfaces.TeacherMapper" >
+  <resultMap id="BaseResultMap" type="cn.edu.nuc.ssm_four.entity.Teacher" >
+    <id column="TID" property="tid" jdbcType="INTEGER" />
+    <result column="AID" property="aid" jdbcType="INTEGER" />
+    <result column="TNAME" property="tname" jdbcType="VARCHAR" />
+    <result column="TCOURSE" property="tcourse" jdbcType="VARCHAR" />
+    <result column="TPASS" property="tpass" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    TID, AID, TNAME, TCOURSE, TPASS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from teacher
+    where TID = #{tid,jdbcType=INTEGER}
+  </select>
+  <select id="selectId" resultType="Teacher" parameterType="int">
+  select 
+  t.tid,t.tname,t.tcourse,t.tpass,a.aid
+  from teacher t inner join admin a on t.aid=a.aid
+  where a.aid=#{aid}
+  limit #{start},#{offset}
+  </select>
+  <!-- 教师名称模糊查询 -->
+  <select id="selectName" resultType="Teacher" parameterType="string" >
+    select 
+    <include refid="Base_Column_List" />
+    from teacher
+    <!-- where TNAME = #{tname,jdbcType=VARCHAR} -->
+    where TNAME LIKE CONCAT(CONCAT('%', #{tname,jdbcType=VARCHAR}), '%')
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from teacher
+    where TID = #{tid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.nuc.ssm_four.entity.Teacher" >
+    insert into teacher (TID, AID, TNAME, 
+      TCOURSE, TPASS)
+    values (#{tid,jdbcType=INTEGER}, #{aid,jdbcType=INTEGER}, #{tname,jdbcType=VARCHAR}, 
+      #{tcourse,jdbcType=VARCHAR}, #{tpass,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.nuc.ssm_four.entity.Teacher" >
+    insert into teacher
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tid != null" >
+        TID,
+      </if>
+      <if test="aid != null" >
+        AID,
+      </if>
+      <if test="tname != null" >
+        TNAME,
+      </if>
+      <if test="tcourse != null" >
+        TCOURSE,
+      </if>
+      <if test="tpass != null" >
+        TPASS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tid != null" >
+        #{tid,jdbcType=INTEGER},
+      </if>
+      <if test="aid != null" >
+        #{aid,jdbcType=INTEGER},
+      </if>
+      <if test="tname != null" >
+        #{tname,jdbcType=VARCHAR},
+      </if>
+      <if test="tcourse != null" >
+        #{tcourse,jdbcType=VARCHAR},
+      </if>
+      <if test="tpass != null" >
+        #{tpass,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.nuc.ssm_four.entity.Teacher" >
+    update teacher
+    <set >
+      <if test="aid != null" >
+        AID = #{aid,jdbcType=INTEGER},
+      </if>
+      <if test="tname != null" >
+        TNAME = #{tname,jdbcType=VARCHAR},
+      </if>
+      <if test="tcourse != null" >
+        TCOURSE = #{tcourse,jdbcType=VARCHAR},
+      </if>
+      <if test="tpass != null" >
+        TPASS = #{tpass,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where TID = #{tid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.nuc.ssm_four.entity.Teacher" >
+    update teacher
+    set AID = #{aid,jdbcType=INTEGER},
+      TNAME = #{tname,jdbcType=VARCHAR},
+      TCOURSE = #{tcourse,jdbcType=VARCHAR},
+      TPASS = #{tpass,jdbcType=VARCHAR}
+    where TID = #{tid,jdbcType=INTEGER}
+  </update>
+</mapper>
